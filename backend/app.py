@@ -5,7 +5,6 @@ app = Flask(__name__)
 CORS(app)
 
 # 1 booth multiplication
-
 def booth_steps(m, q):
     steps = []
     n = len(m)
@@ -54,9 +53,7 @@ def booth_steps(m, q):
         "result": format(product, f"0{2*n}b")
     }
 
-
-#2. modified booth multiplication
-
+# 2 modified booth
 def modified_booth_steps(m, q):
     steps = []
     q = "0" + q   
@@ -90,9 +87,7 @@ def modified_booth_steps(m, q):
         "result": "Partial products shown above"
     }
 
-
-
-# 3. RESTORING DIVISION
+# 3 restoring
 def restoring_division_steps(dividend, divisor):
     A = 0
     Q = int(dividend, 2)
@@ -104,16 +99,13 @@ def restoring_division_steps(dividend, divisor):
     for i in range(n):
         step = {"cycle": i + 1}
 
-        # SHIFT LEFT
         A = (A << 1) | ((Q >> (n - 1)) & 1)
         Q = (Q << 1) & ((1 << n) - 1)
 
-        # TRIAL SUBTRACTION
         A2 = A - M
 
         if A2 < 0:
             step["operation"] = "A - M is negative → restore, Q0 = 0"
-            step["A_before_restore"] = format(A2 & ((1 << n) - 1), f"0{n}b")
             Q |= 0
         else:
             step["operation"] = "A - M is positive → keep, Q0 = 1"
@@ -122,7 +114,6 @@ def restoring_division_steps(dividend, divisor):
 
         step["A"] = format(A & ((1 << n) - 1), f"0{n}b")
         step["Q"] = format(Q, f"0{n}b")
-
         steps.append(step)
 
     return {
@@ -131,10 +122,7 @@ def restoring_division_steps(dividend, divisor):
         "remainder": format(A, f"0{n}b")
     }
 
-
-
-# 4. NON-RESTORING DIVISION (WITH STEPS)
-
+# 4 non restoring
 def non_restoring_division_steps(dividend, divisor):
     A = 0
     Q = int(dividend, 2)
@@ -146,11 +134,9 @@ def non_restoring_division_steps(dividend, divisor):
     for i in range(n):
         step = {"cycle": i + 1}
 
-        # SHIFT LEFT
         A = (A << 1) | ((Q >> (n - 1)) & 1)
         Q = (Q << 1) & ((1 << n) - 1)
 
-        # ADD OR SUBTRACT DEPENDING ON SIGN OF A
         if A >= 0:
             A = A - M
             step["operation"] = "A>=0 → A=A-M, Q0=1"
@@ -162,10 +148,8 @@ def non_restoring_division_steps(dividend, divisor):
 
         step["A"] = format(A & ((1 << n) - 1), f"0{n}b")
         step["Q"] = format(Q, f"0{n}b")
-
         steps.append(step)
 
-    # FINAL CORRECTION
     if A < 0:
         A = A + M
 
@@ -176,8 +160,6 @@ def non_restoring_division_steps(dividend, divisor):
     }
 
 
-
-# MAIN API ENDPOINT (CONNECTS ALL 4 FUNCTIONS)
 @app.route("/calculate", methods=["POST"])
 def calculate():
     data = request.json
@@ -196,10 +178,4 @@ def calculate():
         return jsonify(non_restoring_division_steps(data["dividend"], data["divisor"]))
 
     return jsonify({"error": "Invalid operation"})
-
-
-
-# RUN SERVER
-if __name__ == "__main__":
-    app.run(debug=True)
 
