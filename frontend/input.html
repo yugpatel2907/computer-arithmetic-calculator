@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Inputs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #999;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #ff6b35;
+        }
+
+        .back-arrow {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 40px 35px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42);
+        }
+
+        h2 {
+            color: #ffffff;
+            font-size: 1.6em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 35px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9em;
+            color: #bbb;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 8px;
+            border: 1px solid #2a2a2a;
+            background: #0e0e0e;
+            color: #ffffff;
+            font-size: 1em;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ff6b35;
+            background: #111;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        input::placeholder {
+            color: #555;
+        }
+
+        .button-group {
+            margin-top: 35px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42);
+            color: white;
+            font-size: 1.05em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Results section styles */
+        #inputSection {
+            display: block;
+        }
+
+        #resultsSection {
+            display: none;
+        }
+
+        .result {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .result .label {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .result .value {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .step {
+            border-radius: 10px;
+            padding: 14px;
+            background: linear-gradient(180deg, rgba(255, 107, 53, 0.03), rgba(0, 0, 0, 0.02));
+            border: 1px solid rgba(255, 107, 53, 0.06);
+        }
+
+        .step-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .cycle {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .op {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 8px;
+        }
+
+        .cell {
+            font-size: 0.92rem;
+            color: #ddd;
+        }
+
+        .cell .k {
+            color: #888;
+            font-size: 0.85rem;
+            display: block;
+        }
+
+        .bin {
+            font-family: 'Courier New', monospace;
+            margin-top: 6px;
+            color: #fff;
+            word-break: break-all;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 36px 12px;
+            color: #888;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42);
+            color: #fff;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 25px;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="index.html" class="back-link">
+        <span class="back-arrow">←</span> Back to operations
+    </a>
+
+    <div class="card">
+        <!-- INPUT SECTION -->
+        <div id="inputSection">
+            <h2 id="title">Enter Inputs</h2>
+            <p class="subtitle" id="subtitle">Provide binary numbers for calculation</p>
+
+            <div class="input-group" id="group1">
+                <label id="label1">Input 1</label>
+                <input type="text" id="input1" placeholder="e.g., 1010">
+            </div>
+
+            <div class="input-group" id="group2">
+                <label id="label2">Input 2</label>
+                <input type="text" id="input2" placeholder="e.g., 0110">
+            </div>
+
+            <div class="button-group">
+                <button onclick="send()" id="calcBtn">Calculate</button>
+            </div>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div id="resultsSection">
+            <div class="result">
+                <div>
+                    <div class="label">Operation</div>
+                    <div id="operationName" class="value"></div>
+                </div>
+                <div>
+                    <div class="label">Final Result</div>
+                    <div id="finalResult" class="value"></div>
+                </div>
+            </div>
+
+            <div class="steps-list" id="stepsList">
+                <!-- steps rendered here -->
+            </div>
+
+            <div class="controls">
+                <button class="btn" id="backBtn">← Back to operations</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentData = null;
+    let params = new URLSearchParams(window.location.search);
+    let op = params.get("op");
+
+    if (op === "booth") {
+        document.getElementById("title").textContent = "Booth Multiplication";
+        document.getElementById("subtitle").textContent = "Enter binary numbers to multiply";
+        document.getElementById("label1").textContent = "Multiplicand (M)";
+        document.getElementById("label2").textContent = "Multiplier (Q)";
+        document.getElementById("input1").placeholder = "e.g., 0111";
+        document.getElementById("input2").placeholder = "e.g., 0101";
+    } else if (op === "modified_booth") {
+        document.getElementById("title").textContent = "Modified Booth Multiplication";
+        document.getElementById("subtitle").textContent = "Enter binary numbers to multiply";
+        document.getElementById("label1").textContent = "Multiplicand (M)";
+        document.getElementById("label2").textContent = "Multiplier (Q)";
+        document.getElementById("input1").placeholder = "e.g., 0111";
+        document.getElementById("input2").placeholder = "e.g., 0101";
+    } else if (op === "restoring") {
+        document.getElementById("title").textContent = "Restoring Division";
+        document.getElementById("subtitle").textContent = "Enter binary numbers for division";
+        document.getElementById("label1").textContent = "Dividend";
+        document.getElementById("label2").textContent = "Divisor";
+        document.getElementById("input1").placeholder = "e.g., 1100";
+        document.getElementById("input2").placeholder = "e.g., 0011";
+    } else if (op === "non_restoring") {
+        document.getElementById("title").textContent = "Non-Restoring Division";
+        document.getElementById("subtitle").textContent = "Enter binary numbers for division";
+        document.getElementById("label1").textContent = "Dividend";
+        document.getElementById("label2").textContent = "Divisor";
+        document.getElementById("input1").placeholder = "e.g., 1100";
+        document.getElementById("input2").placeholder = "e.g., 0011";
+    }
+
+    function isBinary(str) {
+        return /^[01]+$/.test(str.trim());
+    }
+
+    function escapeHtml(str) {
+        return String(str || '').replace(/[&<>"'`]/g, function(m) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' }[m];
+        });
+    }
+
+    function displayResults(data) {
+        currentData = data;
+        const steps = data.steps || [];
+        const result = data.result || '';
+        const operation = data.operation || (data.op || 'Operation');
+
+        document.getElementById("operationName").textContent = operation;
+        document.getElementById("finalResult").textContent = result;
+
+        const list = document.getElementById("stepsList");
+        list.innerHTML = '';
+
+        if (steps.length === 0) {
+            const n = document.createElement('div');
+            n.className = 'empty';
+            n.textContent = 'No intermediate steps available.';
+            list.appendChild(n);
+        } else {
+            steps.forEach(s => {
+                const el = document.createElement('div');
+                el.className = 'step';
+                el.innerHTML = `
+                    <div class="step-head">
+                        <div class="cycle">Cycle ${s.cycle ?? s.pair ?? '-'}</div>
+                        <div class="op">${s.operation ?? ''}</div>
+                    </div>
+                    <div class="grid">
+                        <div class="cell">
+                            <span class="k">A (before)</span>
+                            <div class="bin">${escapeHtml(s.before_shift_A ?? s.A ?? '')}</div>
+                        </div>
+                        <div class="cell">
+                            <span class="k">A (current)</span>
+                            <div class="bin">${escapeHtml(s.A ?? '')}</div>
+                        </div>
+                        <div class="cell">
+                            <span class="k">Q (current)</span>
+                            <div class="bin">${escapeHtml(s.Q ?? '')}</div>
+                        </div>
+                        <div class="cell">
+                            <span class="k">Q_1</span>
+                            <div class="bin">${escapeHtml(String(s.Q_1 ?? ''))}</div>
+                        </div>
+                        <div class="cell">
+                            <span class="k">After shift A</span>
+                            <div class="bin">${escapeHtml(s.after_shift_A ?? '')}</div>
+                        </div>
+                        <div class="cell">
+                            <span class="k">After shift Q</span>
+                            <div class="bin">${escapeHtml(s.after_shift_Q ?? '')}</div>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(el);
+            });
+        }
+
+        document.getElementById("inputSection").style.display = 'none';
+        document.getElementById("resultsSection").style.display = 'block';
+    }
+
+    function send() {
+        let input1 = document.getElementById("input1").value.trim();
+        let input2 = document.getElementById("input2").value.trim();
+
+        if (!input1 || !isBinary(input1)) {
+            alert("Input 1 must be a valid binary number (0s and 1s only)");
+            return;
+        }
+
+        if (!input2 || !isBinary(input2)) {
+            alert("Input 2 must be a valid binary number (0s and 1s only)");
+            return;
+        }
+
+        let btn = document.getElementById("calcBtn");
+        btn.disabled = true;
+        btn.textContent = "Calculating...";
+
+        let body = { operation: op };
+
+        if (op === "booth" || op === "modified_booth") {
+            body.m = input1;
+            body.q = input2;
+        } else {
+            body.dividend = input1;
+            body.divisor = input2;
+        }
+
+        fetch("http://127.0.0.1:5000/calculate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+        .then(res => res.json())
+        .then(data => {
+            localStorage.setItem("steps", JSON.stringify(data));
+            displayResults(data);
+        })
+        .catch(error => {
+            btn.disabled = false;
+            btn.textContent = "Calculate";
+            alert("Error connecting to server. Please try again.");
+            console.error("Error:", error);
+        });
+    }
+
+    document.getElementById("backBtn").addEventListener("click", function() {
+        window.location.href = "index.html";
+    });
+
+    document.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            send();
+        }
+    });
+</script>
+
+</body>
+</html>
