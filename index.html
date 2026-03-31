@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Computer Arithmetic Calculator</title>
     <style>
         * {
@@ -12,177 +13,166 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: #0a0a0a;
             min-height: 100vh;
+            background: #040405;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             padding: 20px;
         }
         
-        .container {
-            max-width: 550px;
-            width: 100%;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        
-        h1 {
-            color: #ffffff;
-            font-size: 2em;
-            font-weight: 600;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
-        }
-        
-        .accent-line {
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #ff6b35, #ff8c42);
-            margin: 0 auto;
-        }
-        
-        .options-grid {
-            display: grid;
-            gap: 18px;
-        }
-        
-        .option {
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            padding: 26px;
-            cursor: pointer;
-            transition: all 0.25s ease;
+        .wrapper {
+            width: min(960px, 100%);
+            background: #060709;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid #212429;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
             position: relative;
             overflow: hidden;
         }
         
-        .option::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(180deg, #ff6b35, #ff8c42);
-            opacity: 0;
-            transition: opacity 0.25s ease;
+        .headline {
+            text-align: center;
+            margin-bottom: 24px;
         }
         
-        .option:hover {
-            border-color: #ff6b35;
-            background: #1f1f1f;
-            transform: translateX(4px);
-        }
-        
-        .option:hover::before {
-            opacity: 1;
-        }
-        
-        .option:active {
-            transform: translateX(2px);
-        }
-        
-        .option-title {
-            font-size: 1.15em;
-            font-weight: 600;
-            color: #ffffff;
+        .headline h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
             margin-bottom: 8px;
-            display: flex;
+        }
+        
+        .headline p {
+            color: #a4acc4;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        
+        .card {
+            background: #0b0f16;
+            border: 1px solid #1f2735;
+            border-radius: 14px;
+            padding: 18px;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: #ff8c00;
+            box-shadow: 0 10px 24px rgba(255, 140, 0, 0.2);
+        }
+        
+        .card-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            background: #111722;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
         }
         
-        .option-icon {
-            color: #ff6b35;
-            font-size: 0.9em;
-            opacity: 0;
-            transition: opacity 0.25s ease;
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #f8fafc;
+            margin-bottom: 8px;
         }
         
-        .option:hover .option-icon {
-            opacity: 1;
-        }
-        
-        .option-desc {
-            font-size: 0.9em;
-            color: #999;
+        .card-text {
+            color: #9ca6bd;
+            font-weight: 500;
+            margin-bottom: 12px;
+            min-height: 40px;
             line-height: 1.4;
         }
         
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            color: #666;
-            font-size: 0.85em;
+        .card-tag {
+            color: #ff8c00;
+            font-weight: 700;
+            font-size: .82rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
         }
         
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.6em;
-            }
-            
-            .option {
-                padding: 22px;
-            }
+        .note {
+            margin-top: 24px;
+            text-align: center;
+            color: #9ca6bd;
+            font-size: .84rem;
+        }
+        
+        .fade {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 160px;
+            background: radial-gradient(circle at top center, rgba(255, 140, 0, 0.3), transparent 60%);
+            pointer-events: none;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1>Arithmetic Calculator</h1>
-            <div class="accent-line"></div>
-        </header>
-        
-        <div class="options-grid">
-            <div class="option" onclick="go('booth')">
-                <div class="option-title">
-                    Booth Multiplication
-                    <span class="option-icon">→</span>
-                </div>
-                <div class="option-desc">Standard Booth's algorithm for binary multiplication</div>
+    <div class="wrapper">
+        <div class="fade"></div>
+        <div class="headline">
+            <h1>Computer Arithmetic Calculator</h1>
+            <p>Explore fundamental computer arithmetic algorithms</p>
+        </div>
+        <div class="grid">
+            <div class="card" onclick="navigate('booth')">
+                <div class="card-icon">⚡</div>
+                <div class="card-title">Booth Multiplication</div>
+                <div class="card-text">Standard Booth's algorithm for signed multiplication with binary steps.</div>
+                <div class="card-tag">Medium</div>
             </div>
-            
-            <div class="option" onclick="go('modified_booth')">
-                <div class="option-title">
-                    Modified Booth Multiplication
-                    <span class="option-icon">→</span>
-                </div>
-                <div class="option-desc">Enhanced multiplication with bit-pair recoding</div>
+            <div class="card" onclick="navigate('modified_booth')">
+                <div class="card-icon">🚀</div>
+                <div class="card-title">Modified Booth</div>
+                <div class="card-text">Improved Booth using bit-pair recoding to reduce operations.</div>
+                <div class="card-tag">Advanced</div>
             </div>
-            
-            <div class="option" onclick="go('restoring')">
-                <div class="option-title">
-                    Restoring Division
-                    <span class="option-icon">→</span>
-                </div>
-                <div class="option-desc">Classic division algorithm with remainder restoration</div>
+            <div class="card" onclick="navigate('restoring')">
+                <div class="card-icon">⟳</div>
+                <div class="card-title">Restoring Division</div>
+                <div class="card-text">Classical restoring division with remainder correction steps.</div>
+                <div class="card-tag">Medium</div>
             </div>
-            
-            <div class="option" onclick="go('non_restoring')">
-                <div class="option-title">
-                    Non-Restoring Division
-                    <span class="option-icon">→</span>
-                </div>
-                <div class="option-desc">Optimized division technique without restoration</div>
+            <div class="card" onclick="navigate('non_restoring')">
+                <div class="card-icon">⚙️</div>
+                <div class="card-title">Non-Restoring Division</div>
+                <div class="card-text">Faster non-restoring approach without additional restore cycles.</div>
+                <div class="card-tag">Advanced</div>
             </div>
         </div>
-        
-        <div class="footer">
-            Computer Architecture
-        </div>
+        <div class="note">Made by yug patel</div>
     </div>
-    
+
     <script>
-        function go(operation) {
-            window.location.href = "input.html?op=" + operation;
+        function navigate(op) {
+            const wrapper = document.querySelector('.wrapper');
+            wrapper.style.transition = 'transform .2s ease, opacity .2s ease';
+            wrapper.style.transform = 'scale(0.96)';
+            wrapper.style.opacity = '0.5';
+            setTimeout(() => window.location.href = 'input.html?op=' + op, 140);
         }
     </script>
 </body>
+
 </html>

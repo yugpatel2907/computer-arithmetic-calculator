@@ -1,488 +1,324 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enter Inputs</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Input - Computer Arithmetic</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: #0a0a0a;
+            background: #000;
+            color: #fff;
+            font-family: Inter, 'Segoe UI', Arial, sans-serif;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            width: 100%;
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            color: #999;
-            text-decoration: none;
-            font-size: 0.9em;
-            margin-bottom: 30px;
-            transition: color 0.2s;
-        }
-
-        .back-link:hover {
-            color: #ff6b35;
-        }
-
-        .back-arrow {
-            margin-right: 8px;
-            font-size: 1.2em;
-        }
-
-        .card {
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            padding: 40px 35px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #ff6b35, #ff8c42);
-        }
-
-        h2 {
-            color: #ffffff;
-            font-size: 1.6em;
-            font-weight: 600;
-            margin-bottom: 8px;
-            letter-spacing: -0.3px;
-        }
-
-        .subtitle {
-            color: #888;
-            font-size: 0.9em;
-            margin-bottom: 35px;
-        }
-
-        .input-group {
-            margin-bottom: 24px;
-        }
-
-        label {
-            display: block;
-            font-size: 0.9em;
-            color: #bbb;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px 16px;
-            border-radius: 8px;
-            border: 1px solid #2a2a2a;
-            background: #0e0e0e;
-            color: #ffffff;
-            font-size: 1em;
-            font-family: 'Courier New', monospace;
-            transition: all 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #ff6b35;
-            background: #111;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-        }
-
-        input::placeholder {
-            color: #555;
-        }
-
-        .button-group {
-            margin-top: 35px;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(90deg, #ff6b35, #ff8c42);
-            color: white;
-            font-size: 1.05em;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: 0.3px;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Results section styles */
-        #inputSection {
-            display: block;
-        }
-
-        #resultsSection {
-            display: none;
-        }
-
-        .result {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .card {
+            width: min(100%, 980px);
+            background: #090a0f;
+            border: 1px solid #2c2e3a;
+            border-radius: 14px;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, .7);
+            padding: 24px;
+            margin-top: 18px;
+        }
+        
+        .header {
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #e2e8f0;
+            font-size: 2rem;
+            font-weight: 900;
+        }
+        
+        .header p {
+            color: #94a3b8;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        
+        .input-grid {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             margin-bottom: 16px;
         }
-
-        .result .label {
-            color: #888;
-            font-size: 0.95rem;
+        
+        .form-label {
+            font-size: .85rem;
+            font-weight: 800;
+            color: #f8fafc;
+            margin-bottom: 6px;
         }
-
-        .result .value {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(90deg, #ff6b35, #ff8c42);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-weight: 700;
-            font-size: 1.05rem;
-        }
-
-        .steps-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 6px;
-        }
-
-        .step {
+        
+        .form-input {
+            width: 100%;
             border-radius: 10px;
-            padding: 14px;
-            background: linear-gradient(180deg, rgba(255, 107, 53, 0.03), rgba(0, 0, 0, 0.02));
-            border: 1px solid rgba(255, 107, 53, 0.06);
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 11px 12px;
+            font-size: 1rem;
         }
-
-        .step-head {
+        
+        .form-input:focus {
+            outline: 1px solid #38bdf8;
+            border-color: #38bdf8;
+        }
+        
+        .actions {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
-
-        .cycle {
-            font-weight: 700;
-            color: #fff;
+        
+        .btn {
+            border: none;
+            border-radius: 11px;
+            padding: 11px 16px;
+            font-weight: 900;
+            cursor: pointer;
         }
-
-        .op {
-            color: #888;
-            font-size: 0.95rem;
+        
+        .btn-primary {
+            background: #22c55e;
+            color: #000;
         }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 8px;
+        
+        .btn-secondary {
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #334155;
         }
-
-        .cell {
-            font-size: 0.92rem;
-            color: #ddd;
-        }
-
-        .cell .k {
-            color: #888;
-            font-size: 0.85rem;
-            display: block;
-        }
-
-        .bin {
-            font-family: 'Courier New', monospace;
-            margin-top: 6px;
-            color: #fff;
-            word-break: break-all;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 36px 12px;
-            color: #888;
-        }
-
-        .controls {
+        
+        .result-summary {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
             margin-top: 14px;
         }
-
-        .btn {
-            width: 100%;
-            padding: 10px 14px;
+        
+        .chip {
+            background: #111827;
+            border: 1px solid #334155;
             border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            background: linear-gradient(90deg, #ff6b35, #ff8c42);
-            color: #fff;
+            padding: 10px;
+            min-width: 115px;
         }
-
-        @media (max-width: 480px) {
-            .card {
-                padding: 30px 25px;
-            }
-
-            h2 {
-                font-size: 1.4em;
-            }
+        
+        .chip .name {
+            font-size: .71rem;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: 700;
+        }
+        
+        .chip .value {
+            margin-top: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: .92rem;
+            color: #eeeeee;
+            word-break: break-all;
+        }
+        
+        .step-box {
+            background: #0b1120;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 9px 0;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 7px;
+        }
+        
+        .step-title {
+            color: #f8fafc;
+            font-weight: 900;
+            font-size: .92rem;
+        }
+        
+        .step-op {
+            color: #38bdf8;
+            font-size: .82rem;
+            font-weight: 800;
+        }
+        
+        .field-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px;
+        }
+        
+        .field-name {
+            color: #94a3b8;
+            font-size: .74rem;
+            font-weight: 800;
+        }
+        
+        .field-value {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #f8fafc;
+            padding: 7px;
+            font-family: 'Courier New', monospace;
+            font-size: .82rem;
+        }
+        
+        .footer {
+            margin-top: 12px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: .82rem;
+            font-weight: 700;
         }
     </style>
 </head>
+
 <body>
-
-<div class="container">
-    <a href="index.html" class="back-link">
-        <span class="back-arrow">←</span> Back to operations
-    </a>
-
     <div class="card">
-        <!-- INPUT SECTION -->
-        <div id="inputSection">
-            <h2 id="title">Enter Inputs</h2>
-            <p class="subtitle" id="subtitle">Provide binary numbers for calculation</p>
+        <div class="header">
+            <h1>Enter Input</h1>
+            <p id="sub">Choose an operator and enter binary values.</p>
+        </div>
 
-            <div class="input-group" id="group1">
-                <label id="label1">Input 1</label>
-                <input type="text" id="input1" placeholder="e.g., 1010">
+        <div class="input-grid">
+            <div>
+                <div class="form-label" id="label1">Input 1</div>
+                <input id="input1" class="form-input" placeholder="e.g., 0111" />
             </div>
-
-            <div class="input-group" id="group2">
-                <label id="label2">Input 2</label>
-                <input type="text" id="input2" placeholder="e.g., 0110">
-            </div>
-
-            <div class="button-group">
-                <button onclick="send()" id="calcBtn">Calculate</button>
+            <div>
+                <div class="form-label" id="label2">Input 2</div>
+                <input id="input2" class="form-input" placeholder="e.g., 0101" />
             </div>
         </div>
 
-        <!-- RESULTS SECTION -->
-        <div id="resultsSection">
-            <div class="result">
-                <div>
-                    <div class="label">Operation</div>
-                    <div id="operationName" class="value"></div>
-                </div>
-                <div>
-                    <div class="label">Final Result</div>
-                    <div id="finalResult" class="value"></div>
-                </div>
-            </div>
-
-            <div class="steps-list" id="stepsList">
-                <!-- steps rendered here -->
-            </div>
-
-            <div class="controls">
-                <button class="btn" id="backBtn">← Back to operations</button>
-            </div>
+        <div class="actions">
+            <button class="btn btn-primary" id="calcBtn" onclick="calculate()">Calculate</button>
+            <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+            <button class="btn btn-secondary" onclick="back()">Back</button>
         </div>
+
+        <div id="summary" class="result-summary"></div>
+        <div id="steps"></div>
+
+        <div class="footer">Made by yug patel</div>
     </div>
-</div>
 
-<script>
-    let currentData = null;
-    let params = new URLSearchParams(window.location.search);
-    let op = params.get("op");
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const op = params.get('op');
+        const ops = {
+            booth: ['Booth Multiplication', 'Multiplicand', 'Multiplier'],
+            modified_booth: ['Modified Booth', 'Multiplicand', 'Multiplier'],
+            restoring: ['Restoring Division', 'Dividend', 'Divisor'],
+            non_restoring: ['Non-Restoring Division', 'Dividend', 'Divisor']
+        };
 
-    if (op === "booth") {
-        document.getElementById("title").textContent = "Booth Multiplication";
-        document.getElementById("subtitle").textContent = "Enter binary numbers to multiply";
-        document.getElementById("label1").textContent = "Multiplicand (M)";
-        document.getElementById("label2").textContent = "Multiplier (Q)";
-        document.getElementById("input1").placeholder = "e.g., 0111";
-        document.getElementById("input2").placeholder = "e.g., 0101";
-    } else if (op === "modified_booth") {
-        document.getElementById("title").textContent = "Modified Booth Multiplication";
-        document.getElementById("subtitle").textContent = "Enter binary numbers to multiply";
-        document.getElementById("label1").textContent = "Multiplicand (M)";
-        document.getElementById("label2").textContent = "Multiplier (Q)";
-        document.getElementById("input1").placeholder = "e.g., 0111";
-        document.getElementById("input2").placeholder = "e.g., 0101";
-    } else if (op === "restoring") {
-        document.getElementById("title").textContent = "Restoring Division";
-        document.getElementById("subtitle").textContent = "Enter binary numbers for division";
-        document.getElementById("label1").textContent = "Dividend";
-        document.getElementById("label2").textContent = "Divisor";
-        document.getElementById("input1").placeholder = "e.g., 1100";
-        document.getElementById("input2").placeholder = "e.g., 0011";
-    } else if (op === "non_restoring") {
-        document.getElementById("title").textContent = "Non-Restoring Division";
-        document.getElementById("subtitle").textContent = "Enter binary numbers for division";
-        document.getElementById("label1").textContent = "Dividend";
-        document.getElementById("label2").textContent = "Divisor";
-        document.getElementById("input1").placeholder = "e.g., 1100";
-        document.getElementById("input2").placeholder = "e.g., 0011";
-    }
-
-    function isBinary(str) {
-        return /^[01]+$/.test(str.trim());
-    }
-
-    function escapeHtml(str) {
-        return String(str || '').replace(/[&<>"'`]/g, function(m) {
-            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' }[m];
-        });
-    }
-
-    function displayResults(data) {
-        currentData = data;
-        const steps = data.steps || [];
-        const result = data.result || '';
-        const operation = data.operation || (data.op || 'Operation');
-
-        document.getElementById("operationName").textContent = operation;
-        document.getElementById("finalResult").textContent = result;
-
-        const list = document.getElementById("stepsList");
-        list.innerHTML = '';
-
-        if (steps.length === 0) {
-            const n = document.createElement('div');
-            n.className = 'empty';
-            n.textContent = 'No intermediate steps available.';
-            list.appendChild(n);
+        if (ops[op]) {
+            const [title, label1, label2] = ops[op];
+            document.querySelector('h1').textContent = title;
+            document.getElementById('sub').textContent = 'Binary algorithm steps for ' + title + '.';
+            document.getElementById('label1').textContent = label1;
+            document.getElementById('label2').textContent = label2;
         } else {
-            steps.forEach(s => {
-                const el = document.createElement('div');
-                el.className = 'step';
-                el.innerHTML = `
-                    <div class="step-head">
-                        <div class="cycle">Cycle ${s.cycle ?? s.pair ?? '-'}</div>
-                        <div class="op">${s.operation ?? ''}</div>
-                    </div>
-                    <div class="grid">
-                        <div class="cell">
-                            <span class="k">A (before)</span>
-                            <div class="bin">${escapeHtml(s.before_shift_A ?? s.A ?? '')}</div>
-                        </div>
-                        <div class="cell">
-                            <span class="k">A (current)</span>
-                            <div class="bin">${escapeHtml(s.A ?? '')}</div>
-                        </div>
-                        <div class="cell">
-                            <span class="k">Q (current)</span>
-                            <div class="bin">${escapeHtml(s.Q ?? '')}</div>
-                        </div>
-                        <div class="cell">
-                            <span class="k">Q_1</span>
-                            <div class="bin">${escapeHtml(String(s.Q_1 ?? ''))}</div>
-                        </div>
-                        <div class="cell">
-                            <span class="k">After shift A</span>
-                            <div class="bin">${escapeHtml(s.after_shift_A ?? '')}</div>
-                        </div>
-                        <div class="cell">
-                            <span class="k">After shift Q</span>
-                            <div class="bin">${escapeHtml(s.after_shift_Q ?? '')}</div>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(el);
-            });
+            document.querySelector('h1').textContent = 'Unknown operation';
+            document.getElementById('sub').textContent = 'Use the home page to select a valid operation.';
+            document.getElementById('calcBtn').disabled = true;
         }
 
-        document.getElementById("inputSection").style.display = 'none';
-        document.getElementById("resultsSection").style.display = 'block';
-    }
-
-    function send() {
-        let input1 = document.getElementById("input1").value.trim();
-        let input2 = document.getElementById("input2").value.trim();
-
-        if (!input1 || !isBinary(input1)) {
-            alert("Input 1 must be a valid binary number (0s and 1s only)");
-            return;
+        function isBinary(v) {
+            return /^[01]+$/.test(v.trim());
         }
 
-        if (!input2 || !isBinary(input2)) {
-            alert("Input 2 must be a valid binary number (0s and 1s only)");
-            return;
+        function resetForm() {
+            document.getElementById('input1').value = '';
+            document.getElementById('input2').value = '';
+            document.getElementById('summary').innerHTML = '';
+            document.getElementById('steps').innerHTML = '';
         }
 
-        let btn = document.getElementById("calcBtn");
-        btn.disabled = true;
-        btn.textContent = "Calculating...";
-
-        let body = { operation: op };
-
-        if (op === "booth" || op === "modified_booth") {
-            body.m = input1;
-            body.q = input2;
-        } else {
-            body.dividend = input1;
-            body.divisor = input2;
+        function back() {
+            window.location.href = 'index.html';
         }
 
-        fetch("https://computer-arithmetic-calculator.onrender.com/calculate", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
-        })
-        .then(res => res.json())
-        .then(data => {
-            localStorage.setItem("steps", JSON.stringify(data));
-            displayResults(data);
-        })
-        .catch(error => {
-            btn.disabled = false;
-            btn.textContent = "Calculate";
-            alert("Error connecting to server. Please try again.");
-            console.error("Error:", error);
-        });
-    }
-
-    document.getElementById("backBtn").addEventListener("click", function() {
-        window.location.href = "index.html";
-    });
-
-    document.addEventListener("keypress", function(e) {
-        if (e.key === "Enter") {
-            send();
+        function calculate() {
+            const a = document.getElementById('input1').value.trim();
+            const b = document.getElementById('input2').value.trim();
+            if (!isBinary(a) || !isBinary(b)) {
+                alert('Use binary digits only.');
+                return;
+            }
+            if ((op === 'booth' || op === 'modified_booth') && a.length !== b.length) {
+                alert('Multiplication inputs must be same length.');
+                return;
+            }
+            document.getElementById('calcBtn').disabled = true;
+            fetch('http://localhost:5000/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(op === 'booth' || op === 'modified_booth' ? {
+                        operation: op,
+                        m: a,
+                        q: b
+                    } : {
+                        operation: op,
+                        dividend: a,
+                        divisor: b
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('calcBtn').disabled = false;
+                    const summary = document.getElementById('summary');
+                    summary.innerHTML = '';
+                    if (data.result) summary.innerHTML += `<div class="chip"><div class="name">Result</div><div class="value">${data.result}</div></div>`;
+                    if (data.quotient) summary.innerHTML += `<div class="chip"><div class="name">Quotient</div><div class="value">${data.quotient}</div></div>`;
+                    if (data.remainder !== undefined) summary.innerHTML += `<div class="chip"><div class="name">Remainder</div><div class="value">${data.remainder}</div></div>`;
+                    const s = document.getElementById('steps');
+                    s.innerHTML = '';
+                    (data.steps || []).forEach((step, i) => {
+                        const box = document.createElement('div');
+                        box.className = 'step-box';
+                        const opText = (step.operation || '').replace(/</g, '&lt;');
+                        let content = `<div class="step-header"><div class="step-title">Step ${i+1}</div><div class="step-op">${opText}</div></div><div class="field-row">`;
+                        for (let key of Object.keys(step)) {
+                            if (['cycle', 'operation'].includes(key)) continue;
+                            content += `<div><div class="field-name">${key}</div><div class="field-value">${step[key]}</div></div>`;
+                        }
+                        content += '</div>';
+                        box.innerHTML = content;
+                        s.appendChild(box);
+                    });
+                })
+                .catch(() => {
+                    alert('Server error');
+                    document.getElementById('calcBtn').disabled = false;
+                });
         }
-    });
-</script>
-
+    </script>
 </body>
+
 </html>
